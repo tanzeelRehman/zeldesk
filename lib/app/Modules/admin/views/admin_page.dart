@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'package:zeldesk/app/Modules/admin/controller/department_controller.dart';
 
 import 'package:zeldesk/app/Modules/admin/views/Pages/create_dept_page.dart';
 import 'package:zeldesk/app/Modules/admin/views/Pages/create_user_page.dart';

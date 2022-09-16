@@ -6,26 +6,37 @@ class UserModel {
   String? id;
   final String name;
   final String userType;
+  final String email;
   String? inDept;
   Map<String, bool>? user_permissions;
+  bool isSelected;
   UserModel({
     this.id,
     required this.name,
     required this.userType,
+    required this.email,
+    this.inDept,
     this.user_permissions,
+    required this.isSelected,
   });
 
   UserModel copyWith({
     String? id,
     String? name,
     String? userType,
+    String? email,
+    String? inDept,
     Map<String, bool>? user_permissions,
+    bool? isSelected,
   }) {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       userType: userType ?? this.userType,
+      email: email ?? this.email,
+      inDept: inDept ?? this.inDept,
       user_permissions: user_permissions ?? this.user_permissions,
+      isSelected: isSelected ?? this.isSelected,
     );
   }
 
@@ -34,7 +45,10 @@ class UserModel {
       'id': id,
       'name': name,
       'userType': userType,
+      'email': email,
+      'inDept': inDept,
       'user_permissions': user_permissions,
+      'isSelected': isSelected,
     };
   }
 
@@ -43,7 +57,10 @@ class UserModel {
       id: map['id'],
       name: map['name'] ?? '',
       userType: map['userType'] ?? '',
+      email: map['email'] ?? '',
+      inDept: map['inDept'],
       user_permissions: Map<String, bool>.from(map['user_permissions']),
+      isSelected: map['isSelected'] ?? false,
     );
   }
 
@@ -54,7 +71,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, userType: $userType, user_permissions: $user_permissions)';
+    return 'UserModel(id: $id, name: $name, userType: $userType, email: $email, inDept: $inDept, user_permissions: $user_permissions, isSelected: $isSelected)';
   }
 
   @override
@@ -65,7 +82,10 @@ class UserModel {
         other.id == id &&
         other.name == name &&
         other.userType == userType &&
-        mapEquals(other.user_permissions, user_permissions);
+        other.email == email &&
+        other.inDept == inDept &&
+        mapEquals(other.user_permissions, user_permissions) &&
+        other.isSelected == isSelected;
   }
 
   @override
@@ -73,6 +93,9 @@ class UserModel {
     return id.hashCode ^
         name.hashCode ^
         userType.hashCode ^
-        user_permissions.hashCode;
+        email.hashCode ^
+        inDept.hashCode ^
+        user_permissions.hashCode ^
+        isSelected.hashCode;
   }
 }

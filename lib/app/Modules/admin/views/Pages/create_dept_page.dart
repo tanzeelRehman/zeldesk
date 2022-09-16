@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zeldesk/app/Modules/admin/controller/admin_page_controller.dart';
+import 'package:zeldesk/app/Modules/admin/controller/department_controller.dart';
 import 'package:zeldesk/app/Modules/admin/widgets/admin_page_textfield.dart';
 import 'package:zeldesk/app/Modules/admin/widgets/admin_section_heading.dart';
 import 'package:zeldesk/app/Modules/admin/widgets/hr_line.dart';
 import 'package:zeldesk/app/Widgets/custom_decroated_box.dart';
+import 'package:zeldesk/app/Widgets/custom_dialog.dart';
 import 'package:zeldesk/app/Widgets/my_elivated_button.dart';
 import 'package:zeldesk/app/Widgets/profile_dropdown.dart';
 import 'package:zeldesk/core/constants/colors.dart';
@@ -13,10 +15,14 @@ import 'package:zeldesk/core/constants/styles.dart';
 class CreateDeptPage extends StatelessWidget {
   late Size _screen;
   final TextEditingController deptNameText = TextEditingController();
-
+  final DepartmentController deptController = Get.put(DepartmentController());
   @override
   Widget build(BuildContext context) {
     _screen = MediaQuery.of(context).size;
+    void createDept() {
+      deptController.createNewDepartment(name: deptNameText.text);
+    }
+
     return Container(
       color: kdarkbg,
       child: Column(
@@ -80,21 +86,26 @@ class CreateDeptPage extends StatelessWidget {
                     children: [
                       adminsectionHeading(
                           context, 0, 0, "Department agents", 20),
-                      GetBuilder<AdminPageConteroller>(
-                          builder: (adminPageConteroller) {
+                      GetBuilder<DepartmentController>(
+                          builder: (deptController) {
                         return Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: SizedBox(
                               height: _screen.height * 0.40,
-                              child: ListView.builder(
-                                  controller: ScrollController(),
-                                  itemCount:
-                                      adminPageConteroller.employeelist.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return employeeRow(
-                                        context, adminPageConteroller, index);
-                                  }),
+                              child: deptController.employeeListIsLoading
+                                  ? Container(
+                                      height: 80,
+                                      width: 80,
+                                      child: CircularProgressIndicator())
+                                  : ListView.builder(
+                                      controller: ScrollController(),
+                                      itemCount:
+                                          deptController.employeeList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return employeeRow(
+                                            context, deptController, index);
+                                      }),
                             ));
                       }),
                       Padding(
@@ -109,8 +120,10 @@ class CreateDeptPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          myElivatedButton("Create Department", () {}, 130,
-                              context, 40, elivatedButtonStyle, Colors.white),
+                          myElivatedButton("Create Department", () {
+                            createDept();
+                          }, 130, context, 40, elivatedButtonStyle,
+                              Colors.white),
                         ],
                       )
                     ],
@@ -128,7 +141,7 @@ class CreateDeptPage extends StatelessWidget {
   }
 
   Widget employeeRow(
-      BuildContext context, AdminPageConteroller conteroller, int index) {
+      BuildContext context, DepartmentController conteroller, int index) {
     return ListTile(
         leading: Checkbox(
             activeColor: faddedGreen,
@@ -136,28 +149,30 @@ class CreateDeptPage extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             hoverColor: Colors.transparent,
             splashRadius: 0.0,
-            value: conteroller.employeelist[index].isSelected,
+            value: conteroller.employeeList[index].isSelected,
             onChanged: (val) {
               conteroller.updateCheckbox(index);
             }),
         title: adminsectionHeading(
-            context, 5, 5, conteroller.employeelist[index].name, 15),
+            context, 5, 5, conteroller.employeeList[index].name, 15),
         subtitle: adminsectionHeading(
-            context, 5, 5, conteroller.employeelist[index].email, 12),
+            context, 5, 5, conteroller.employeeList[index].email, 12),
         isThreeLine: true,
         trailing: SizedBox(
           width: 400,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              adminsectionHeading(context, 5, 5, "Admin", 15),
+              adminsectionHeading(
+                  context, 5, 5, conteroller.employeeList[index].userType, 15),
               const SizedBox(
                 width: 150,
               ),
               CircleAvatar(
                 radius: 15,
                 backgroundColor: faddedGreen.withOpacity(0.2),
-                child: Text("T"),
+                child:
+                    Text(conteroller.employeeList[index].name.characters.first),
               ),
             ],
           ),

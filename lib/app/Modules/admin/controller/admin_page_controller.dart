@@ -3,12 +3,14 @@ import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:zeldesk/app/Modules/admin/Models/agent_model.dart';
-import 'package:zeldesk/app/Modules/admin/Models/dept_model.dart';
+
 import 'package:zeldesk/app/Modules/admin/Models/employee_list_model.dart';
 import 'package:zeldesk/app/data/Models/user_model.dart';
 import 'package:zeldesk/app/data/Services/firebase/auth_services.dart';
 
 import 'package:zeldesk/core/utils/password_generator.dart';
+
+import '../../../data/Services/firebase/fireStore_service.dart';
 
 class AdminPageConteroller extends GetxController {
   //! CREATE NEW USER
@@ -23,7 +25,9 @@ class AdminPageConteroller extends GetxController {
         email: email,
         password: password,
         model: UserModel(
+            email: email,
             name: name,
+            isSelected: false,
             userType: selectedUserType.value,
             user_permissions: getPermissions()));
 
@@ -78,52 +82,15 @@ class AdminPageConteroller extends GetxController {
   //! ADD DEPARTMENT
   //*==========================================================================
 
-  var employeelist = [
-    EmployeeListModel(
-        name: "Tanzeel",
-        email: "Tanzeel@gmail.com",
-        role: "Admin",
-        isSelected: false),
-    EmployeeListModel(
-        name: "Ejaz",
-        email: "Ejaz@gmail.com",
-        role: "Employee",
-        isSelected: true),
-    EmployeeListModel(
-        name: "Ahmad",
-        email: "Ahmad@gmail.com",
-        role: "Customer",
-        isSelected: true),
-    EmployeeListModel(
-        name: "Ahmad",
-        email: "Ahmad@gmail.com",
-        role: "Customer",
-        isSelected: true),
-    EmployeeListModel(
-        name: "Ahmad",
-        email: "Ahmad@gmail.com",
-        role: "Customer",
-        isSelected: true),
-    EmployeeListModel(
-        name: "Ahmad",
-        email: "Ahmad@gmail.com",
-        role: "Customer",
-        isSelected: true),
-  ];
-  void updateCheckbox(int index) {
-    employeelist[index].isSelected = !employeelist[index].isSelected;
-    update();
-  }
-
   //! DEPARTMENT DETAILS
   //*==========================================================================
 
-  var departments = <DepartmentModel>[
-    DepartmentModel(name: "IT Department"),
-    DepartmentModel(name: "HR Department"),
-    DepartmentModel(name: "Electric Department"),
-    DepartmentModel(name: "Software Department"),
-  ];
+  // var departments = <DepartmentModel>[
+  //   DepartmentModel(name: "IT Department"),
+  //   DepartmentModel(name: "HR Department"),
+  //   DepartmentModel(name: "Electric Department"),
+  //   DepartmentModel(name: "Software Department"),
+  // ];
 
   //! AGENTS LIST
   //*==========================================================================

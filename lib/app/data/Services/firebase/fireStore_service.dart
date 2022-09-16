@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:zeldesk/app/Modules/Login/controller/get_login_instance.dart';
+
 import 'package:zeldesk/app/data/Models/complaint_model.dart';
+import 'package:zeldesk/app/data/Models/department_model.dart';
+
 import 'package:zeldesk/app/data/Models/user_model.dart';
 import 'package:zeldesk/app/data/Services/firebase/auth_services.dart';
 
@@ -20,6 +23,8 @@ class FireStoreService {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _complaints =
       FirebaseFirestore.instance.collection('Complaints');
+  final CollectionReference _departments =
+      FirebaseFirestore.instance.collection('Departments');
 
 //?=====================================================================
 //*=================== User Side Queries //////////////////////////////
@@ -50,6 +55,27 @@ class FireStoreService {
       return GetLoginUserInstance.instance.user =
           UserModel.fromMap(documentReference.data() as Map<String, dynamic>);
     } on Exception catch (e) {
+      return e.toString();
+    }
+  }
+
+  //! GET ALL CUSTOMERS COMPLAINT
+
+  Future getAllUsers() async {
+    try {
+      late QuerySnapshot<Object?> user;
+      user = await _users.orderBy('name', descending: false).get();
+
+      List<UserModel> userList = [];
+      for (var i = 0; i < user.docs.length; i++) {
+        UserModel singleUser =
+            UserModel.fromMap(user.docs[i].data() as Map<String, dynamic>);
+
+        userList.add(singleUser);
+      }
+
+      return userList;
+    } catch (e) {
       return e.toString();
     }
   }
@@ -105,5 +131,43 @@ class FireStoreService {
       print(error);
       return "Error";
     });
+  }
+
+//?=====================================================================
+//*=================== DEPARTMENT Side Queries //////////////////////////////
+//?=====================================================================
+
+  Future<String> createDepartment(DepartmentModel departmentModel) async {
+    String res = '';
+    try {
+      final departmentDoc = _departments.doc();
+
+      await departmentDoc.set(departmentModel.toMap());
+
+      return res = "Sucess";
+    } catch (e) {
+      print(e.toString());
+      return res = "Some error has occured";
+    }
+  }
+
+  Future getAllDepartments() async {
+    try {
+      late QuerySnapshot<Object?> departments;
+      departments =
+          await _departments.orderBy('departmentName', descending: false).get();
+
+      List<DepartmentModel> departmentsList = [];
+      for (var i = 0; i < departments.docs.length; i++) {
+        DepartmentModel singledept = DepartmentModel.fromMap(
+            departments.docs[i].data() as Map<String, dynamic>);
+
+        departmentsList.add(singledept);
+      }
+
+      return departmentsList;
+    } catch (e) {
+      return e.toString();
+    }
   }
 }

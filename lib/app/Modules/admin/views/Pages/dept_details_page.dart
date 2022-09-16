@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zeldesk/app/Modules/admin/controller/admin_page_controller.dart';
+import 'package:zeldesk/app/Modules/admin/controller/department_controller.dart';
 import 'package:zeldesk/app/Modules/admin/widgets/admin_section_heading.dart';
 import 'package:zeldesk/app/Widgets/custom_decroated_box.dart';
 import 'package:zeldesk/app/Widgets/profile_dropdown.dart';
@@ -9,8 +10,7 @@ import 'package:zeldesk/core/constants/colors.dart';
 
 class DepartmentDetails extends StatelessWidget {
   late Size _screen;
-  final AdminPageConteroller adminPageConteroller =
-      Get.find<AdminPageConteroller>();
+  final DepartmentController deptController = Get.put(DepartmentController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,7 @@ class DepartmentDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           //? NAVBAR  IS HERE
+
           Container(
             height: 60,
             color: klightbg,
@@ -30,15 +31,24 @@ class DepartmentDetails extends StatelessWidget {
               // children: [ProfileDropDown(name: name, items: items)],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 35),
-            child: Column(
-                children: List.generate(adminPageConteroller.departments.length,
-                    (index) {
-              return departmentRow(
-                  context, adminPageConteroller.departments[index].name);
-            })),
-          )
+          Expanded(
+            child: GetBuilder<DepartmentController>(builder: (deptcontroller) {
+              return deptcontroller.departmentListIsLoading
+                  ? CircularProgressIndicator()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 35),
+                      child: Column(
+                          children: List.generate(
+                              deptcontroller.departmentList.length, (index) {
+                        return departmentRow(
+                            context,
+                            deptcontroller
+                                .departmentList[index].departmentName);
+                      })),
+                    );
+            }),
+          ),
         ],
       ),
     );
