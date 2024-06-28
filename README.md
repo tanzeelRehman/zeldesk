@@ -1,3 +1,8 @@
-# zeldesk
+# Zeldesk
 
-A multiuser help desk web application where every user has a different role and permissions. These roles and permissions are managed by the admins of the systemultiuser help desk web application where every user has a different role and permissions. These roles and permissions are managed by the admins of the system
+A multiuser help desk web application where every user has a different role and permissions. The admins of the system manage these roles and permissions.
+
+## Tech Stack
+- Flutter (For Frontend)
+- Beamer (For managing deep linking)
+- Firebase (For backend)
